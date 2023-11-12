@@ -22,6 +22,9 @@ class Field:
 
     # region value functions
 
+    def is_finalized(self):
+        return self.value != 0
+
     def get_value(self):
         return self.value
 

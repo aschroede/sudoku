@@ -10,10 +10,11 @@ class App:
         and how many steps it took to solve.
         @param filename:
         """
-        game = Game(Sudoku(filename))
+        sudoku = Sudoku(filename)
+        game = Game(sudoku)
         game.show_sudoku()
 
-        if game.solve() and game.validSolution():
+        if game.solve() and game.valid_solution():
             print("Solved!")
         else:
             print("Could not solve this sudoku :(")
@@ -22,4 +23,5 @@ class App:
 
 
 if __name__ == '__main__':
-    App.start("../Sudokus/Sudoku2.txt")
+    # Sudoku 3, 4 can't be solved
+    App.start("../Sudokus/Sudoku5.txt")
