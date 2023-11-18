@@ -1,14 +1,12 @@
 class Field:
-
     # region constructor
-
     counter = 0
+
     def __init__(self, *args):
 
         self.domain = []
         self.value = 0
         self.neighbours = []
-        Field.counter += 1
 
         # Constructor in case the field is unknown
         if len(args) == 0:
@@ -44,6 +42,11 @@ class Field:
         return self.neighbours
 
     def get_other_neighbours(self, b):
+        """
+
+        @param b:
+        @return: All neighbors of this Field except b
+        """
         new_neighbours = self.neighbours
         new_neighbours.remove(b)
         return new_neighbours
@@ -56,10 +59,6 @@ class Field:
         return self.domain
 
     def get_domain_size(self):
-        """
-
-        @return:
-        """
         return len(self.domain)
 
     def remove_from_domain(self, value):

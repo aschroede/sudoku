@@ -2,6 +2,9 @@ import functools
 from src.Arc import Arc
 
 
+"""Comparable class that wraps arcs and sorts them based on if Field B is finalized in arc (A, B)"""
+
+
 @functools.total_ordering
 class ComparableArcFinalized(Arc):
 

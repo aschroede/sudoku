@@ -33,20 +33,26 @@ class Sudoku:
 
     @staticmethod
     def read_sudoku(filename):
+        """
+        Read in a sudoku file
+        @param filename: Sudoku filename
+        @return: A 9x9 grid of Fields where each field is initialized with all its neighbor fields
+        """
         assert filename is not None and filename != "", "Invalid filename"
 
+        # Setup 9x9 grid
         grid = [[Field for _ in range(9)] for _ in range(9)]
 
         try:
             with open(filename, "r") as file:
-                for row_index, line in enumerate(file):
+                for row, line in enumerate(file):
                     for col_index, char in enumerate(line):
                         if char == '\n':
                             continue
                         if int(char) == 0:
-                            grid[row_index][col_index] = Field()
+                            grid[row][col_index] = Field()
                         else:
-                            grid[row_index][col_index] = Field(int(char))
+                            grid[row][col_index] = Field(int(char))
 
         except FileNotFoundError:
             print("Error opening file: " + filename)
@@ -58,27 +64,22 @@ class Sudoku:
     def add_neighbours(grid):
         """
         Adds a list of neighbors to each field
-        @param grid:
+        @param grid: 9x9 list of Fields
         """
 
         # Start by iterating over each of the fields
-
         for row in range(len(grid)):
-
             for col in range(len(grid[row])):
-                # Add all neighbors in same row
+                neighbors = []
+                neighbors += Sudoku.get_row_neighbors(grid, row, col)
+                neighbors += Sudoku.get_col_neighbors(grid, row, col)
+                neighbors += Sudoku.get_box_neighbors(grid, row, col)
 
-                # Just append all neighbors to same list, don't think it matters wether the neighbor
-                # came from a row, column, or box. But if it does end up mattering in the future you
-                # can store each of these sets of neighbors in their own list inside a larger list.
-                all_neighbors = []
-                all_neighbors += Sudoku.get_row_neighbors(grid, row, col)
-                all_neighbors += Sudoku.get_col_neighbors(grid, row, col)
-                all_neighbors += Sudoku.get_box_neighbors(grid, row, col)
+                # There will be 4 duplicates in the initial set of neighbors. Use set to remove them
+                neighbors = set(neighbors)
 
-                my_neighbor_set = set(all_neighbors)
-
-                grid[row][col].set_neighbours(my_neighbor_set)
+                # Set the neighbors of this Field
+                grid[row][col].set_neighbours(neighbors)
 
     @staticmethod
     def get_row_neighbors(grid, row, col):
@@ -124,5 +125,4 @@ class Sudoku:
         return output
 
     def get_board(self):
-        self.self_board = self.board
-        return self.self_board
+        return self.board
