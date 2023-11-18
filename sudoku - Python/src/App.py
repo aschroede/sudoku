@@ -10,7 +10,6 @@ from src.Heuristics.ComparableArcOrder import ComparableArcOrder
 
 class App:
 
-    # Path to the Sudokus folder
     sudokus_folder = '../Sudokus'
     heuristics = [ComparableArcDomainA, ComparableArcDomainB, ComparableArcFinalized, ComparableArcOrder]
 
@@ -50,11 +49,8 @@ class App:
         # Nicer names
         heuristic_names = ["MRV A", "MRV B", "Finalized Field", "None"]
 
-        # Iterate over files in the Sudokus folder
         for filename in os.listdir(App.sudokus_folder):
-            # Check if the file is a text file
             if filename.endswith('.txt'):
-                # Iterate through heuristics
                 for index, heuristic in enumerate(App.heuristics):
                     result = App.solve_sudoku(os.path.join(App.sudokus_folder, filename), heuristic)
                     row_data = [filename.split(".")[0], heuristic_names[index]]
@@ -65,8 +61,7 @@ class App:
 
     @staticmethod
     def save_data_csv(data):
-        # Save data to CSV file
-        with open('sudoku_data.csv', 'w', newline='') as csvfile:
+        with open('sudoku_test_data.csv', 'w', newline='\n') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerow(
                 ['Sudoku File', 'Heuristic', 'Complexity', 'Initial Arcs', 'Added Arcs', 'Revisions', "Solved"])
@@ -75,41 +70,34 @@ class App:
     @staticmethod
     def start():
         while True:
-            print("Select mode:")
-            print("1. Data Collection Mode")
-            print("2. Regular Mode")
-            choice = input("Enter your choice (1 or 2): ")
+            print("Please choose one of the following \n 1. Data Collection Mode \n 2. Regular Mode")
 
-            if choice == '1':
+            option = input("Enter your choice (1,2): ")
+
+            if option == '1':
                 data = App.collect_data()
-
                 App.save_data_csv(data)
+                print("Data collection done and results are saved to sudoku_test_data.csv")
 
-                print("Data collection completed. Results saved to sudoku_data.csv")
-
-            elif choice == '2':
+            elif option == '2':
                 file_num = input("Enter Sudoku file (1-5): ")
-                print("Select Heuristic:")
-                print("1. MRV A")
-                print("2. MRV B")
-                print("3. Finalized Field")
-                print("4. None")
+                print("Select Heuristic: \n 1. MRV A \n 2. MRV B \n 3. Finalized Field \n 4. None")
                 heuristic_choice = int(input("Enter Heuristic choice (1-4): "))
                 print("\n")
 
                 file = None
                 for filename in os.listdir(App.sudokus_folder):
-                    # Check if the file is a text file
-                    if filename.endswith('.txt') and file_num in filename:
+
+                    if file_num in filename:
                         file = filename
 
                 if file is not None:
                     App.solve_sudoku_verbose(os.path.join(App.sudokus_folder, file), App.heuristics[heuristic_choice - 1])
 
             else:
-                print("Invalid choice. Please enter 1 or 2.")
+                print("Invalid choice")
 
-            continue_input = input("Do you want to continue? (yes/no): ")
+            continue_input = input("Continue? (yes/no): ")
             if continue_input.lower() != 'yes':
                 break
 
