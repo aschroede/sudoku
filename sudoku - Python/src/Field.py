@@ -2,11 +2,13 @@ class Field:
 
     # region constructor
 
+    counter = 0
     def __init__(self, *args):
 
         self.domain = []
         self.value = 0
         self.neighbours = []
+        Field.counter += 1
 
         # Constructor in case the field is unknown
         if len(args) == 0:

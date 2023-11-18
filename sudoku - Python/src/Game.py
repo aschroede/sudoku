@@ -1,7 +1,6 @@
-from collections import deque
 from queue import PriorityQueue
-from OrderedPriorityQueue import OrderedPriorityQueue
-from Arc import Arc
+from itertools import count
+from Field import Field
 
 
 class Game:
@@ -10,9 +9,9 @@ class Game:
         self.sudoku = sudoku
         self.complexity = 0
         self.revisions = 0
-        self.addqueuenum = 0
-        self.priority_queue = OrderedPriorityQueue() if heuristic is None else PriorityQueue()
+        self.priority_queue = PriorityQueue()
         self.heuristic = heuristic
+        self.counter = count()
 
     def show_sudoku(self):
         print(self.sudoku)
@@ -30,31 +29,29 @@ class Game:
             self.complexity += 1
 
             arc = self.priority_queue.get()
+            # nextarc = self.priority_queue[0]
 
-            if not arc.m.is_finalized():
+            #print("Popped arc A domain size: " + str(arc.m.get_domain_size()))
+
+            if not arc.a.is_finalized():
 
                 domain_changed = self.revise(arc)
 
-                if arc.m.get_domain_size() == 0 and arc.m.get_value() == 0:
+                if arc.a.get_domain_size() == 0 and arc.a.get_value() == 0:
                     return False
 
                 if domain_changed:
 
-                    for neighbor in arc.m.get_other_neighbours(arc.n):
+                    for neighbor in arc.a.get_other_neighbours(arc.b):
 
                         if not neighbor.is_finalized():
 
-                            if self.heuristic is None:
-                                new_arc = Arc(neighbor, arc.m)
-                            else:
-                                new_arc = self.heuristic(neighbor, arc.m)
+                            new_arc = self.heuristic(neighbor, arc.a)
 
                             if new_arc not in self.priority_queue.queue:
-                                self.addqueuenum += 1
                                 self.priority_queue.put(new_arc)
 
         print("Number of revisions: " + str(self.revisions))
-        print("Number of added arcs: " + str(self.addqueuenum))
 
         return True
 
@@ -63,12 +60,12 @@ class Game:
         domain_changed = False
 
         # Only restrict domain if value of neighbor is finalized
-        if arc.n.is_finalized():
-            for value in arc.m.get_domain():
-                if value == arc.n.get_value():
+        if arc.b.is_finalized():
+            for value in arc.a.get_domain():
+                if value == arc.b.get_value():
                     self.revisions += 1
                     domain_changed = True
-                    arc.m.remove_from_domain(value)
+                    arc.a.remove_from_domain(value)
 
         return domain_changed
 
@@ -89,13 +86,13 @@ class Game:
                         # Create a tuple of the current Field and a neighbor and store in queue
                         num_arcs += 1
 
-                        if self.heuristic is None:
-                            new_arc = Arc(board[row][col], neighbor)
-                        else:
-                            new_arc = self.heuristic(board[row][col], neighbor)
+                        new_arc = self.heuristic(board[row][col], neighbor)
+
+                        # print("Added arc: " + str(new_arc))
 
                         self.priority_queue.put(new_arc)
 
+        print("Number of fields: " + str(Field.counter))
         print("Number of arcs loaded: " + str(num_arcs))
 
     def valid_solution(self):

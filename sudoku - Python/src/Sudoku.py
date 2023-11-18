@@ -60,11 +60,6 @@ class Sudoku:
         Adds a list of neighbors to each field
         @param grid:
         """
-        # Assumption is that neighbors are all those fields that a particular field depends on
-        # All fields in same row (8)
-        # All fields in same column (8)
-        # All fields in same 9x9 square (8)
-        # So overall there are 24 neighbors (or constraints) and 48 arcs
 
         # Start by iterating over each of the fields
 
@@ -81,7 +76,9 @@ class Sudoku:
                 all_neighbors += Sudoku.get_col_neighbors(grid, row, col)
                 all_neighbors += Sudoku.get_box_neighbors(grid, row, col)
 
-                grid[row][col].set_neighbours(all_neighbors)
+                my_neighbor_set = set(all_neighbors)
+
+                grid[row][col].set_neighbours(my_neighbor_set)
 
     @staticmethod
     def get_row_neighbors(grid, row, col):

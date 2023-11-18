@@ -1,7 +1,9 @@
 from Game import Game
 from Sudoku import Sudoku
-from ComparableArcDomain import ComparableArcDomain
-from ComparableArcFinalized import ComparableArcFinalized
+from src.Heuristics.ComparableArcDomainA import ComparableArcDomainA
+from src.Heuristics.ComparableArcDomainB import ComparableArcDomainB
+from src.Heuristics.ComparableArcFinalized import ComparableArcFinalized
+from src.Heuristics.ComparableArcOrder import ComparableArcOrder
 
 
 class App:
@@ -15,7 +17,7 @@ class App:
 
         # No heuristic
         print("=========== NO Heuristic ===========")
-        heuristic = None
+        heuristic = ComparableArcOrder
         sudoku = Sudoku(filename)
         game = Game(sudoku, heuristic)
         game.show_sudoku()
@@ -29,8 +31,8 @@ class App:
         no_heuristic_complexity = game.complexity
 
         # MRV
-        print("=========== MRV Heuristic ===========")
-        heuristic = ComparableArcDomain
+        print("=========== MRV Heuristic A ===========")
+        heuristic = ComparableArcDomainA
         sudoku = Sudoku(filename)
         game = Game(sudoku, heuristic)
         game.show_sudoku()
@@ -41,7 +43,22 @@ class App:
             print("Could not solve this sudoku :(")
 
         game.show_sudoku()
-        mrv_heuristic_complexity = game.complexity
+        mrv_heuristicA_complexity = game.complexity
+
+        # MRV
+        print("=========== MRV Heuristic B ===========")
+        heuristic = ComparableArcDomainB
+        sudoku = Sudoku(filename)
+        game = Game(sudoku, heuristic)
+        game.show_sudoku()
+
+        if game.solve() and game.valid_solution():
+            print("Solved!")
+        else:
+            print("Could not solve this sudoku :(")
+
+        game.show_sudoku()
+        mrv_heuristicB_complexity = game.complexity
 
         # Finalized
         print("=========== Finalized Field Heuristic ===========")
@@ -60,11 +77,12 @@ class App:
 
         print(f"""
         No Heuristic: {no_heuristic_complexity}
-        MRV Heuristic: {mrv_heuristic_complexity}
+        MRV HeuristicA: {mrv_heuristicA_complexity}
+        MRV HeuristicB: {mrv_heuristicB_complexity}
         Final Heuristic: {finalized_heuristic_complexity}
         """)
 
 
 if __name__ == '__main__':
     # Sudoku 3, 4 can't be solved
-    App.start("../Sudokus/Sudoku1.txt")
+    App.start("../Sudokus/Sudoku5.txt")
