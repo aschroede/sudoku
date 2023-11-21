@@ -9,13 +9,12 @@ priority is the order in which the arcs are created and is assigned via the stat
 
 
 @functools.total_ordering
-class ComparableArcOrder(Arc):
+class ComparableArcInsertOrder(Arc):
     counter = count()
 
     def __init__(self, m, n):
         super().__init__(m, n)
-        self.priority = next(ComparableArcOrder.counter)
-
+        self.priority = next(ComparableArcInsertOrder.counter)
     def __lt__(self, other):
         return self.priority < other.priority
 

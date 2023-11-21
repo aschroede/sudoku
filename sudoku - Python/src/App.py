@@ -5,13 +5,14 @@ from Sudoku import Sudoku
 from src.Heuristics.ComparableArcDomainA import ComparableArcDomainA
 from src.Heuristics.ComparableArcDomainB import ComparableArcDomainB
 from src.Heuristics.ComparableArcFinalized import ComparableArcFinalized
-from src.Heuristics.ComparableArcOrder import ComparableArcOrder
+from src.Heuristics.ComparableArcInsertOrder import ComparableArcInsertOrder
+from src.Heuristics.ComparableArcHeapOrder import ComparableArcHeapOrder
 
 
 class App:
 
     sudokus_folder = '../Sudokus'
-    heuristics = [ComparableArcDomainA, ComparableArcDomainB, ComparableArcFinalized, ComparableArcOrder]
+    heuristics = [ComparableArcHeapOrder, ComparableArcDomainA, ComparableArcInsertOrder, ComparableArcFinalized]
 
     @staticmethod
     def solve_sudoku_verbose(sudoku_file, heuristic):
@@ -47,7 +48,7 @@ class App:
         data = []
 
         # Nicer names
-        heuristic_names = ["MRV A", "MRV B", "Finalized Field", "None"]
+        heuristic_names = ["None", "MRV A", "Insert Order", "Finalized Field"]
 
         for filename in os.listdir(App.sudokus_folder):
             if filename.endswith('.txt'):
@@ -61,7 +62,7 @@ class App:
 
     @staticmethod
     def save_data_csv(data):
-        with open('sudoku_test_data.csv', 'w', newline='\n') as csvfile:
+        with open('sudoku_test_data_non_dynamic.csv', 'w', newline='\n') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerow(
                 ['Sudoku File', 'Heuristic', 'Complexity', 'Initial Arcs', 'Added Arcs', 'Revisions', "Solved"])
@@ -77,11 +78,11 @@ class App:
             if option == '1':
                 data = App.collect_data()
                 App.save_data_csv(data)
-                print("Data collection done and results are saved to sudoku_test_data.csv")
+                print("Data collection done and results are saved to sudoku_test_data_non_dynamic.csv")
 
             elif option == '2':
                 file_num = input("Enter Sudoku file (1-5): ")
-                print("Select Heuristic: \n 1. MRV A \n 2. MRV B \n 3. Finalized Field \n 4. None")
+                print("Select Heuristic: \n 1. None \n 2. MRV A \n 3. Insert Order \n 4. Finalized Field")
                 heuristic_choice = int(input("Enter Heuristic choice (1-4): "))
                 print("\n")
 

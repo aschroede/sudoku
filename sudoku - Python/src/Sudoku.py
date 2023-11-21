@@ -75,9 +75,8 @@ class Sudoku:
                 neighbors += Sudoku.get_col_neighbors(grid, row, col)
                 neighbors += Sudoku.get_box_neighbors(grid, row, col)
 
-                # There will be 4 duplicates in the initial set of neighbors. Use set to remove them
-                neighbors = set(neighbors)
-
+                # There will be 4 duplicates in the initial set of neighbors. Use dict to remove them
+                neighbors = list((dict.fromkeys(neighbors)))
                 # Set the neighbors of this Field
                 grid[row][col].set_neighbours(neighbors)
 

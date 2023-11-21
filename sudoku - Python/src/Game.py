@@ -1,4 +1,5 @@
 from queue import PriorityQueue
+import heapq
 
 
 class Game:
@@ -6,7 +7,7 @@ class Game:
     def __init__(self, sudoku, heuristic):
         self.sudoku = sudoku
         self.heuristic = heuristic
-        self.priority_queue = PriorityQueue()
+        self.priority_queue = []
 
         # Counters for statistics
         self.complexity = 0
@@ -24,12 +25,12 @@ class Game:
         """
         self.load_arcs()
 
-        while not self.priority_queue.empty():
+        while len(self.priority_queue) != 0:
 
             # Increment complexity measure
             self.complexity += 1
 
-            arc = self.priority_queue.get()
+            arc = heapq.heappop(self.priority_queue)
 
             # Only process arc (A, B) if A is not finalized. Wasted effort otherwise.
             if not arc.a.is_finalized():
@@ -43,6 +44,10 @@ class Game:
                     return False
 
                 if domain_changed:
+
+                    # Resort elements
+                    heapq.heapify(self.priority_queue)
+
                     for neighbor in arc.a.get_other_neighbours(arc.b):
 
                         # Only create a new arc if neighbor is not finalized. Wasted effort otherwise.
@@ -50,9 +55,9 @@ class Game:
                             new_arc = self.heuristic(neighbor, arc.a)
 
                             # Only add new arc if not in queue already.
-                            if new_arc not in self.priority_queue.queue:
+                            if new_arc not in self.priority_queue:
                                 self.num_revised_arcs_loaded += 1
-                                self.priority_queue.put(new_arc)
+                                heapq.heappush(self.priority_queue, new_arc)
 
         return True
 
@@ -101,7 +106,8 @@ class Game:
                         new_arc = self.heuristic(board[row][col], neighbor)
 
                         # Add to queue
-                        self.priority_queue.put(new_arc)
+
+                        heapq.heappush(self.priority_queue, new_arc)
 
     def valid_solution(self):
         """
